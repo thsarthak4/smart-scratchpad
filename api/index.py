@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 import re
 import json
+import os
 
-# Standard relative template binding optimized for Vercel Serverless runtimes
-app = Flask(__name__, template_folder='../templates')
+# Build an absolute path to the 'templates' directory at the root level
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.dirname(current_dir)
+template_dir = os.path.join(root_dir, 'templates')
+
+app = Flask(__name__, template_folder=template_dir)
 
 def analyze_payload(text):
     text = text.strip()
