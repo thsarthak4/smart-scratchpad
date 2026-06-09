@@ -1,20 +1,9 @@
 from flask import Flask, render_template, request, jsonify
 import re
 import json
-import os
 
-# Universal cross-platform path resolution
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-
-# Vercel environments look for templates at the root level; 
-# local environments fallback gracefully if nested.
-if os.path.exists(os.path.join(parent_dir, 'templates')):
-    template_dir = os.path.join(parent_dir, 'templates')
-else:
-    template_dir = os.path.join(current_dir, 'templates')
-
-app = Flask(__name__, template_folder=template_dir)
+# Standard relative template binding optimized for Vercel Serverless runtimes
+app = Flask(__name__, template_folder='../templates')
 
 def analyze_payload(text):
     text = text.strip()
@@ -88,6 +77,3 @@ def analyze():
     input_text = data.get('text', '')
     analysis_result = analyze_payload(input_text)
     return jsonify(analysis_result)
-
-# Expose for Vercel Web Server Gateway Interfaces
-app = app
