@@ -3,14 +3,16 @@ import re
 import json
 import os
 
-# -------------------------------------------------------------------------
-# FORCE PATH RESOLUTION FOR LOCAL AND VERCEL RUNTIMES
-# -------------------------------------------------------------------------
-# This looks at the exact absolute path of this index.py file on your Windows machine,
-# moves up one directory level, and explicitly binds the templates folder.
+# Universal cross-platform path resolution
 current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir))
-template_dir = os.path.join(parent_dir, 'templates')
+parent_dir = os.path.dirname(current_dir)
+
+# Vercel environments look for templates at the root level; 
+# local environments fallback gracefully if nested.
+if os.path.exists(os.path.join(parent_dir, 'templates')):
+    template_dir = os.path.join(parent_dir, 'templates')
+else:
+    template_dir = os.path.join(current_dir, 'templates')
 
 app = Flask(__name__, template_folder=template_dir)
 
@@ -87,5 +89,5 @@ def analyze():
     analysis_result = analyze_payload(input_text)
     return jsonify(analysis_result)
 
-# Expose app safely for Vercel
+# Expose for Vercel Web Server Gateway Interfaces
 app = app
