@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart AI Scratchpad Engine</title>
+    <style>
+        :root {
+            --bg-main: #0B0F19;
+            --bg-card: #151D30;
+            --border-color: #24324F;
+            --accent-cyan: #00F5FF;
+            --accent-green: #38EF7D;
+            --accent-red: #FF4B4B;
+            --accent-orange: #FF9F43;
+            --text-primary: #F3F4F6;
+            --text-secondary: #9CA3AF;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .wrapper { max-width: 1000px; margin: 0 auto; }
+        header { margin-bottom: 30px; }
+        h1 {
+            font-size: 2.2rem; margin: 0 0 10px 0;
+            background: linear-gradient(90deg, var(--accent-cyan), #7F00FF);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        p.subtitle { color: var(--text-secondary); margin: 0; font-size: 1.1rem; }
+        textarea {
+            width: 100%; height: 250px; background-color: var(--bg-card);
+            color: var(--text-primary); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 20px; box-sizing: border-box;
+            font-family: monospace; font-size: 1rem; line-height: 1.6;
+            resize: vertical; outline: none; transition: border-color 0.2s;
+        }
+        textarea:focus { border-color: var(--accent-cyan); }
+        .dynamic-panel {
+            background-color: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 25px; display: none; margin-top: 25px;
+        }
+        .panel-header {
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px;
+        }
+        .panel-title { font-size: 1.25rem; margin: 0; }
+        .badge { font-size: 0.75rem; text-transform: uppercase; padding: 6px 12px; border-radius: 20px; font-weight: 700; }
+        .content-area pre {
+            background-color: #0B0F19; padding: 15px; border-radius: 8px;
+            overflow-x: auto; border: 1px solid var(--border-color); color: #E5E7EB;
+        }
+        .badge-json { background-color: rgba(56, 239, 125, 0.2); color: var(--accent-green); }
+        .badge-error { background-color: rgba(255, 75, 75, 0.2); color: var(--accent-red); }
+        .badge-links { background-color: rgba(0, 245, 255, 0.2); color: var(--accent-cyan); }
+        .badge-text { background-color: rgba(156, 163, 175, 0.2); color: var(--text-secondary); }
+        .badge-warn { background-color: rgba(255, 159, 67, 0.2); color: var(--accent-orange); }
+        .link-list a { color: var(--accent-cyan); text-decoration: none; display: block; margin: 8px 0; }
+        .link-list a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <header>
+            <h1>Context-Aware Intelligent Scratchpad</h1>
+            <p class="subtitle">Paste raw data arrays, code errors, or text strings to auto-format and inspect them in real-time.</p>
+        </header>
+
+        <textarea id="main-input" placeholder="Paste data blocks, stack traces, or links here..."></textarea>
+
+        <div id="analytics-panel" class="dynamic-panel">
+            <div class="panel-header">
+                <h3 class="panel-title">Inspection Matrix</h3>
+                <span id="type-tag" class="badge">Text</span>
+            </div>
+            <div id="render-viewport" class="content-area"></div>
+        </div>
+    </div>
+
+    <script>
+        const mainInput = document.getElementById('main-input');
+        const analyticsPanel = document.getElementById('analytics-panel');
+        const typeTag = document.getElementById('type-tag');
+        const renderViewport = document.getElementById('render-viewport');
+        let debounceTimer = null;
+
+        mainInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(triggerEnginePipeline, 400);
+        });
+
+        async function triggerEnginePipeline() {
+            const payload = mainInput.value.trim();
+            if (!payload) {
+                analyticsPanel.style.display = 'none';
+                return;
+            }
+
+            try {
+                const stream = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: payload })
+                });
+                const result = await stream.json();
+                renderUI(result);
+            } catch (err) {
+                console.error("Analysis failed:", err);
+            }
+        }
+
+        function renderUI(data) {
+            analyticsPanel.style.display = 'block';
+            typeTag.className = 'badge';
+            renderViewport.innerHTML = '';
+
+            switch(data.type) {
+                case 'json':
+                    typeTag.innerText = 'JSON Data';
+                    typeTag.classList.add('badge-json');
+                    renderViewport.innerHTML = `<pre>${JSON.stringify(data.data, null, 4)}</pre>`;
+                    break;
+                case 'malformed_json':
+                    typeTag.innerText = 'Broken JSON';
+                    typeTag.classList.add('badge-warn');
+                    renderViewport.innerHTML = `<p style="color:var(--accent-orange)">⚠️ ${data.message}</p>`;
+                    break;
+                case 'error_log':
+                    typeTag.innerText = 'Crash Log';
+                    typeTag.classList.add('badge-error');
+                    renderViewport.innerHTML = `
+                        <pre style="color:var(--accent-red);">${data.summary}</pre>
+                        <p style="font-size:0.9rem; color:var(--text-secondary);">${data.location}</p>
+                    `;
+                    break;
+                case 'links':
+                    typeTag.innerText = 'Mapped Links';
+                    typeTag.classList.add('badge-links');
+                    let html = '<div class="link-list">';
+                    data.links.forEach(url => html += `<a href="${url}" target="_blank">${url} ↗</a>`);
+                    renderViewport.innerHTML = html + '</div>';
+                    break;
+                case 'text':
+                    typeTag.innerText = 'Plaintext';
+                    typeTag.classList.add('badge-text');
+                    renderViewport.innerHTML = `
+                        <p>Words: **${data.stats.words}** | Characters: **${data.stats.characters}**</p>
+                        <p>Estimated Reading Window: **${data.stats.est_reading_time_min} min**</p>
+                    `;
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
