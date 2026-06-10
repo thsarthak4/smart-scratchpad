@@ -1,14 +1,14 @@
-# 🚀 Smart Scratchpad Engine
+#  Smart Scratchpad Engine
 
 A lightweight, real-time text analysis platform that intelligently classifies and processes unstructured input streams into structured, interactive insights.
 
-### 🌐 Live Demo
+###  Live Demo
 
 **Production Deployment:** https://smart-scratchpad-22oz.vercel.app
 
 ---
 
-## 📖 Overview
+##  Overview
 
 Smart Scratchpad is a context-aware parsing engine designed to analyze raw text inputs and automatically route them through specialized processing modules.
 
@@ -18,29 +18,29 @@ The application uses deterministic pattern classification powered by regular exp
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
-### 📦 JSON Parser
+###  JSON Parser
 
 * Detects JSON payloads automatically
 * Validates structure and syntax
 * Displays formatted key-value hierarchies
 * Highlights malformed JSON errors
 
-### 🚨 Error & Stack Trace Analyzer
+###  Error & Stack Trace Analyzer
 
 * Parses Python exception logs
 * Extracts file names and line numbers
 * Identifies failure locations
 * Improves debugging workflow
 
-### 🌐 URL Extractor
+###  URL Extractor
 
 * Detects hyperlinks from unstructured text
 * Extracts and lists URLs
 * Provides direct clickable access
 
-### 📊 Text Analytics Engine
+###  Text Analytics Engine
 
 * Word count
 * Character count
@@ -49,7 +49,7 @@ The application uses deterministic pattern classification powered by regular exp
 
 ---
 
-## ⚡ Processing Pipeline
+##  Processing Pipeline
 
 ```text
 Raw Unstructured Input
@@ -70,7 +70,7 @@ Parser   Parser   Extractor Analytics
 
 ---
 
-## 🏗 System Architecture
+##  System Architecture
 
 ```text
 SMART-SCRATCHPAD
@@ -95,7 +95,7 @@ SMART-SCRATCHPAD
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 | Category        | Technology                  |
 | --------------- | --------------------------- |
@@ -108,7 +108,7 @@ SMART-SCRATCHPAD
 
 ---
 
-## 🔍 How It Works
+##  How It Works
 
 1. User submits raw text input.
 2. Classification engine evaluates patterns.
@@ -126,7 +126,7 @@ Supported input types:
 
 ---
 
-## 🚀 Local Development Setup
+##  Local Development Setup
 
 ### Prerequisites
 
@@ -176,7 +176,7 @@ http://127.0.0.1:5000
 
 ---
 
-## ☁️ Deployment Workflow
+##  Deployment Workflow
 
 The project uses an automated CI/CD deployment pipeline through Vercel.
 
@@ -201,7 +201,7 @@ git push origin main
 
 ---
 
-## 🎯 Why This Project?
+##  Why This Project?
 
 Smart Scratchpad demonstrates:
 
@@ -217,7 +217,7 @@ It serves as a practical productivity tool while showcasing software engineering
 
 ---
 
-## 📄 License
+##  License
 
 Distributed under the MIT License.
 
@@ -225,7 +225,7 @@ Feel free to fork, modify, and build upon this project.
 
 ---
 
-## 👨‍💻 Author
+##  Author
 
 **Sarthak Singh Chaudhary**
 
